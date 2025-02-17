@@ -1,5 +1,5 @@
 local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait() -- Đảm bảo rằng nhân vật đã có mặt
+local character = player.Character or player.CharacterAdded:Wait()
 
 -- Hồi máu siêu nhanh
 local function autoHeal()
@@ -12,28 +12,37 @@ local function autoHeal()
     end
 end
 
--- Ngăn tự động bật PvP khi bị tấn công
-local function antiAutoPvP()
+-- Hồi energy siêu nhanh
+local function autoEnergy()
     while true do
-        wait(0.1)
+        wait(0.1) -- Hồi energy mỗi 0.1 giây
         if character and character:FindFirstChild("Humanoid") then
-            local humanoid = character.Humanoid
-            -- Kiểm tra và vô hiệu hóa việc bị tấn công
-            if humanoid:GetAttribute("Attacking") then
-                humanoid:SetAttribute("Attacking", false)
+            local energy = character:FindFirstChild("Energy")
+            if energy then
+                energy.Value = energy.MaxValue -- Hồi energy về max value liên tục
             end
         end
     end
 end
 
--- Ngừng bị tấn công bởi Bounty Hunters
-local function antiBountyHunter()
+-- Ngừng bị tấn công bởi các quái vật, NPC và Boss
+local function antiNPCAndBoss()
     while true do
-        wait(0.1)
+        wait(0.1) -- Kiểm tra mỗi 0.1 giây
         if character and character:FindFirstChild("Humanoid") then
             local humanoid = character.Humanoid
-            -- Ngừng việc bị tấn công bởi Bounty Hunters
-            humanoid:SetAttribute("CanBeAttacked", false) -- Ngừng việc bị tấn công
+
+            -- Lọc tất cả các đối tượng trong game để tìm các quái vật và boss
+            for _, obj in pairs(workspace:GetChildren()) do
+                -- Kiểm tra xem đối tượng có phải là quái vật, NPC hoặc boss
+                if obj:IsA("Model") and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
+                    -- Kiểm tra nếu quái vật/ NPC/ Boss đang tấn công bạn
+                    if obj.Humanoid.Target == character then
+                        -- Chặn không cho đối tượng này tấn công
+                        obj.Humanoid:MoveTo(obj.Humanoid.Parent.PrimaryPart.Position + Vector3.new(0, 10, 0))
+                    end
+                end
+            end
         end
     end
 end
@@ -49,6 +58,6 @@ end
 spawn(function()
     checkCharacter()
     spawn(autoHeal)
-    spawn(antiAutoPvP)
-    spawn(antiBountyHunter)
+    spawn(autoEnergy)
+    spawn(antiNPCAndBoss)
 end)
