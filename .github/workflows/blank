@@ -1,36 +1,25 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
--- Tốc độ click (tăng tốc độ nếu muốn nhấp nhanh hơn)
-local clickSpeed = 0.05  -- Điều chỉnh tốc độ click (0.05 giây = nhấp rất nhanh)
-
--- Hàm để tự động click và gây sát thương nhanh
-local function autoClickDamage()
+-- Hồi máu siêu nhanh
+local function autoHeal()
     while true do
-        wait(clickSpeed)  -- Điều khiển tốc độ click
+        wait(0.1) -- Hồi máu mỗi 0.1 giây
         if character and character:FindFirstChild("Humanoid") then
-            -- Tăng sát thương cho cận chiến (Melee)
-            local melee = character:FindFirstChild("Melee")
-            if melee and melee:FindFirstChild("Damage") then
-                melee.Damage = 999999 -- Đặt sát thương melee cực cao cho mỗi lần click
-            end
+            local humanoid = character.Humanoid
+            humanoid.Health = humanoid.MaxHealth -- Hồi máu về max health liên tục
+        end
+    end
+end
 
-            -- Tăng sát thương cho súng
-            local gun = character:FindFirstChild("Gun")
-            if gun and gun:FindFirstChild("Damage") then
-                gun.Damage = 999999 -- Đặt sát thương súng cực cao cho mỗi lần click
-            end
-
-            -- Tăng sát thương cho kiếm
-            local sword = character:FindFirstChild("Sword")
-            if sword and sword:FindFirstChild("Damage") then
-                sword.Damage = 999999 -- Đặt sát thương kiếm cực cao cho mỗi lần click
-            end
-
-            -- Tăng sát thương cho trái ác quỷ (Devil Fruits)
-            local devilFruit = player:FindFirstChild("DevilFruit")
-            if devilFruit and devilFruit:FindFirstChild("Damage") then
-                devilFruit.Damage = 999999 -- Đặt sát thương trái ác quỷ cực cao cho mỗi lần click
+-- Hồi energy siêu nhanh
+local function autoEnergy()
+    while true do
+        wait(0.1) -- Hồi energy mỗi 0.1 giây
+        if character and character:FindFirstChild("Humanoid") then
+            local energy = character:FindFirstChild("Energy")
+            if energy then
+                energy.Value = energy.MaxValue -- Hồi energy về max value liên tục
             end
         end
     end
@@ -43,8 +32,9 @@ local function checkCharacter()
     end)
 end
 
--- Kích hoạt tính năng auto click damage khi nhân vật tồn tại
+-- Kích hoạt tất cả các tính năng khi nhân vật tồn tại
 spawn(function()
     checkCharacter()
-    spawn(autoClickDamage) -- Kích hoạt hàm auto click damage
+    spawn(autoHeal)
+    spawn(autoEnergy)
 end)
