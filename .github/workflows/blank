@@ -1,25 +1,36 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
--- Hồi máu siêu nhanh
-local function autoHeal()
-    while true do
-        wait(0.1) -- Hồi máu mỗi 0.1 giây
-        if character and character:FindFirstChild("Humanoid") then
-            local humanoid = character.Humanoid
-            humanoid.Health = humanoid.MaxHealth -- Hồi máu về max health liên tục
-        end
-    end
-end
+-- Tốc độ click nhanh
+local clickSpeed = 0.05  -- Thay đổi giá trị này để điều chỉnh tốc độ click (0.05 = nhanh)
 
--- Hồi energy siêu nhanh
-local function autoEnergy()
+-- Hàm để thực hiện Fast Click Damage
+local function fastClickDamage()
     while true do
-        wait(0.1) -- Hồi energy mỗi 0.1 giây
+        wait(clickSpeed)  -- Thực hiện mỗi khi click với tốc độ được xác định
         if character and character:FindFirstChild("Humanoid") then
-            local energy = character:FindFirstChild("Energy")
-            if energy then
-                energy.Value = energy.MaxValue -- Hồi energy về max value liên tục
+            -- Tăng sát thương cận chiến (Melee) mỗi lần click
+            local melee = character:FindFirstChild("Melee")
+            if melee and melee:FindFirstChild("Damage") then
+                melee.Damage = 999999 -- Đặt sát thương melee cực cao cho mỗi lần click
+            end
+
+            -- Tăng sát thương cho súng
+            local gun = character:FindFirstChild("Gun")
+            if gun and gun:FindFirstChild("Damage") then
+                gun.Damage = 999999 -- Đặt sát thương súng cực cao cho mỗi lần click
+            end
+
+            -- Tăng sát thương cho kiếm
+            local sword = character:FindFirstChild("Sword")
+            if sword and sword:FindFirstChild("Damage") then
+                sword.Damage = 999999 -- Đặt sát thương kiếm cực cao cho mỗi lần click
+            end
+
+            -- Tăng sát thương cho trái ác quỷ (Devil Fruits)
+            local devilFruit = player:FindFirstChild("DevilFruit")
+            if devilFruit and devilFruit:FindFirstChild("Damage") then
+                devilFruit.Damage = 999999 -- Đặt sát thương trái ác quỷ cực cao cho mỗi lần click
             end
         end
     end
@@ -32,9 +43,8 @@ local function checkCharacter()
     end)
 end
 
--- Kích hoạt tất cả các tính năng khi nhân vật tồn tại
+-- Kích hoạt tính năng fast click damage khi nhân vật tồn tại
 spawn(function()
     checkCharacter()
-    spawn(autoHeal)
-    spawn(autoEnergy)
+    spawn(fastClickDamage) -- Kích hoạt hàm fast click damage
 end)
