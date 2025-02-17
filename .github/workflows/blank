@@ -1,28 +1,46 @@
 local player = game.Players.LocalPlayer
 
+-- Hồi máu siêu nhanh
 local function autoHeal()
     while true do
-        wait(0.1) -- Chạy mỗi 0.1 giây
+        wait(0.1) -- Hồi máu mỗi 0.1 giây
         local character = player.Character
         if character and character:FindFirstChild("Humanoid") then
             local humanoid = character.Humanoid
-            humanoid.Health = humanoid.MaxHealth -- Hồi máu liên tục
+            humanoid.Health = humanoid.MaxHealth -- Hồi máu về max health liên tục
         end
     end
 end
 
-local function antiPvP()
+-- Ngăn tự động bật PvP khi bị tấn công
+local function antiAutoPvP()
     while true do
         wait(0.1)
         local character = player.Character
         if character and character:FindFirstChild("Humanoid") then
             local humanoid = character.Humanoid
-            -- Tắt PvP: Ngăn người chơi khác tấn công
-            humanoid:SetAttribute("CanBeAttacked", false)
+            -- Tắt tính năng PvP tự động
+            if humanoid:GetAttribute("Attacking") then
+                humanoid:SetAttribute("Attacking", false)
+            end
         end
     end
 end
 
--- Kích hoạt cả hai tính năng
+-- Ngừng bị tấn công bởi Bounty Hunters
+local function antiBountyHunter()
+    while true do
+        wait(0.1)
+        local character = player.Character
+        if character and character:FindFirstChild("Humanoid") then
+            local humanoid = character.Humanoid
+            -- Chặn việc bị tấn công bởi Bounty Hunters
+            humanoid:SetAttribute("CanBeAttacked", false) -- Ngừng việc bị tấn công
+        end
+    end
+end
+
+-- Kích hoạt tất cả các tính năng
 spawn(autoHeal)
-spawn(antiPvP)
+spawn(antiAutoPvP)
+spawn(antiBountyHunter)
