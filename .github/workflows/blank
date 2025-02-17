@@ -25,28 +25,6 @@ local function autoEnergy()
     end
 end
 
--- Ngừng bị tấn công bởi các quái vật, NPC và Boss
-local function antiNPCAndBoss()
-    while true do
-        wait(0.1) -- Kiểm tra mỗi 0.1 giây
-        if character and character:FindFirstChild("Humanoid") then
-            local humanoid = character.Humanoid
-
-            -- Lọc tất cả các đối tượng trong game để tìm các quái vật và boss
-            for _, obj in pairs(workspace:GetChildren()) do
-                -- Kiểm tra xem đối tượng có phải là quái vật, NPC hoặc boss
-                if obj:IsA("Model") and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
-                    -- Kiểm tra nếu quái vật/ NPC/ Boss đang tấn công bạn
-                    if obj.Humanoid.Target == character then
-                        -- Chặn không cho đối tượng này tấn công
-                        obj.Humanoid:MoveTo(obj.Humanoid.Parent.PrimaryPart.Position + Vector3.new(0, 10, 0))
-                    end
-                end
-            end
-        end
-    end
-end
-
 -- Kiểm tra xem nhân vật có tồn tại và có thể tương tác không
 local function checkCharacter()
     player.CharacterAdded:Connect(function()
@@ -59,5 +37,4 @@ spawn(function()
     checkCharacter()
     spawn(autoHeal)
     spawn(autoEnergy)
-    spawn(antiNPCAndBoss)
 end)
