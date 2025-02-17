@@ -1,10 +1,10 @@
 local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait() -- Đảm bảo rằng nhân vật đã có mặt
 
 -- Hồi máu siêu nhanh
 local function autoHeal()
     while true do
         wait(0.1) -- Hồi máu mỗi 0.1 giây
-        local character = player.Character
         if character and character:FindFirstChild("Humanoid") then
             local humanoid = character.Humanoid
             humanoid.Health = humanoid.MaxHealth -- Hồi máu về max health liên tục
@@ -16,7 +16,6 @@ end
 local function antiAutoPvP()
     while true do
         wait(0.1)
-        local character = player.Character
         if character and character:FindFirstChild("Humanoid") then
             local humanoid = character.Humanoid
             -- Kiểm tra và vô hiệu hóa việc bị tấn công
@@ -31,7 +30,6 @@ end
 local function antiBountyHunter()
     while true do
         wait(0.1)
-        local character = player.Character
         if character and character:FindFirstChild("Humanoid") then
             local humanoid = character.Humanoid
             -- Ngừng việc bị tấn công bởi Bounty Hunters
@@ -42,16 +40,12 @@ end
 
 -- Kiểm tra xem nhân vật có tồn tại và có thể tương tác không
 local function checkCharacter()
-    while true do
-        wait(1)
-        if not player.Character or not player.Character:FindFirstChild("Humanoid") then
-            warn("Character không tồn tại, thử lại sau...")
-            wait(3)  -- Đợi 3 giây và thử lại
-        end
-    end
+    player.CharacterAdded:Connect(function()
+        character = player.Character
+    end)
 end
 
--- Kích hoạt các tính năng khi nhân vật tồn tại
+-- Kích hoạt tất cả các tính năng khi nhân vật tồn tại
 spawn(function()
     checkCharacter()
     spawn(autoHeal)
