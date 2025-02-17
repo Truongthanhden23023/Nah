@@ -1,15 +1,15 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
--- Tốc độ click nhanh
-local clickSpeed = 0.05  -- Thay đổi giá trị này để điều chỉnh tốc độ click (0.05 = nhanh)
+-- Tốc độ click (tăng tốc độ nếu muốn nhấp nhanh hơn)
+local clickSpeed = 0.05  -- Điều chỉnh tốc độ click (0.05 giây = nhấp rất nhanh)
 
--- Hàm để thực hiện Fast Click Damage
-local function fastClickDamage()
+-- Hàm để tự động click và gây sát thương nhanh
+local function autoClickDamage()
     while true do
-        wait(clickSpeed)  -- Thực hiện mỗi khi click với tốc độ được xác định
+        wait(clickSpeed)  -- Điều khiển tốc độ click
         if character and character:FindFirstChild("Humanoid") then
-            -- Tăng sát thương cận chiến (Melee) mỗi lần click
+            -- Tăng sát thương cho cận chiến (Melee)
             local melee = character:FindFirstChild("Melee")
             if melee and melee:FindFirstChild("Damage") then
                 melee.Damage = 999999 -- Đặt sát thương melee cực cao cho mỗi lần click
@@ -43,8 +43,8 @@ local function checkCharacter()
     end)
 end
 
--- Kích hoạt tính năng fast click damage khi nhân vật tồn tại
+-- Kích hoạt tính năng auto click damage khi nhân vật tồn tại
 spawn(function()
     checkCharacter()
-    spawn(fastClickDamage) -- Kích hoạt hàm fast click damage
+    spawn(autoClickDamage) -- Kích hoạt hàm auto click damage
 end)
